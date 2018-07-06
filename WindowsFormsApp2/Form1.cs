@@ -13,8 +13,10 @@ using System.Net;
 using System.Globalization;
 
 
+
 namespace WindowsFormsApp2
-{
+{   
+
     public partial class Przegladarka : Form
 
         {
@@ -34,7 +36,7 @@ namespace WindowsFormsApp2
         WebBrowser web = new WebBrowser();
         int i = 0;
 
-
+        
         private void Form1_Load(object sender, EventArgs e)
         {
             web = new WebBrowser();
@@ -50,7 +52,12 @@ namespace WindowsFormsApp2
 
         }
 
-                //addFavorit method
+        /*!
+* Lista ulubione.
+*
+* Tworzy plik fav.xml zawierajacy adresy dodane do listy ulubione.
+*/
+        
         private void addFavorit(String url, string name)
         {
             XmlDocument myXml = new XmlDocument();
@@ -79,7 +86,13 @@ namespace WindowsFormsApp2
             myXml.Save(favXml);
         }
 
-        //addLink method
+
+        /*!
+* Pasek szybkiego dostepu.
+*
+* Tworzy plik links.xml  zawierajacy adresy dodane do paska dostepu.
+*/
+        
         private void addLink(String url, string name)
         {
             XmlDocument myXml = new XmlDocument();
@@ -118,13 +131,14 @@ namespace WindowsFormsApp2
             myXml.Save(linksXml);
         }
 
-        //click link button
+        
         private void items_Click(object sender, EventArgs e)
         {
             ToolStripButton b = (ToolStripButton)sender;
             getCurrentBrowser().Navigate(b.ToolTipText);
         }
-        //show context menu on button
+
+        
         private void b_MouseUp(object sender, MouseEventArgs e)
         {
             ToolStripButton b = (ToolStripButton)sender;
@@ -135,11 +149,14 @@ namespace WindowsFormsApp2
                 linkContextMenu.Show(MousePosition);
         }
 
-        /*LINKS BAR*/
-
         string adress, name;
 
-        // favicon
+        /*!
+* Favicon.
+*
+* Zapisuje favicony stron oraz wyswietla je w pasku szybkiego dostepu.
+*/
+
         public static Image favicon(String u, string file)
         {
             Uri url = new Uri(u);
@@ -160,8 +177,6 @@ namespace WindowsFormsApp2
 
 
         }
-        
-        //favicon index
         private int faviconIndex(string url)
         {
             Uri key = new Uri(url);
@@ -169,7 +184,6 @@ namespace WindowsFormsApp2
                 imgList.Images.Add(key.Host.ToString(), favicon(url, "link.png"));
             return imgList.Images.IndexOfKey(key.Host.ToString());
         }
-        //getFavicon from key
         private Image getFavicon(string key)
         {
             Uri url = new Uri(key);
@@ -179,13 +193,11 @@ namespace WindowsFormsApp2
             return imgList.Images[url.Host.ToString()];
         }
 
-        /*ADDRESS BAR*/
-
         private WebBrowser getCurrentBrowser()
         {
             return (WebBrowser)tabControl1.SelectedTab.Controls[0];
         }
-        //ENTER
+
         private void adrBarTextBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -200,24 +212,38 @@ namespace WindowsFormsApp2
             tabControl1.SelectedTab.Text = ((WebBrowser)tabControl1.SelectedTab.Controls[0]).DocumentTitle;
         }
 
+        /*!
+* LOG.
+*
+* Zapisuje logi z przegladania do pliku log.
+*/
+        
         private void przejdzToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
             ((WebBrowser)tabControl1.SelectedTab.Controls[0]).Navigate(toolStripComboBox1.Text);
             if (!toolStripComboBox1.Items.Contains(toolStripComboBox1.Text)) ;
-            File.AppendAllText("historia.txt", DateTime.Now.ToString() + " " + web.DocumentTitle + Environment.NewLine);
+            File.AppendAllText("log.txt", DateTime.Now.ToString() + " " + web.DocumentTitle + Environment.NewLine);
         }
 
+        
         private void wsteczToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ((WebBrowser)tabControl1.SelectedTab.Controls[0]).GoBack();
         }
 
+        
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
         {
             ((WebBrowser)tabControl1.SelectedTab.Controls[0]).GoForward();
         }
 
+        /*!
+* Dodaj karte.
+*
+* Dodaje nowa karte.
+*/
+        
         private void dodajKarteToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
@@ -234,6 +260,12 @@ namespace WindowsFormsApp2
 
         }
 
+        /*!
+* Usun karte.
+*
+* Usuwa karte.
+*/
+        
         private void usuńKarteToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (tabControl1.TabPages.Count - 1 > 0)
@@ -244,11 +276,13 @@ namespace WindowsFormsApp2
             }
         }
 
+        
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
 
+        
         private void toolStripComboBox1_Click(object sender, EventArgs e)
         {
             if (web.DocumentTitle.Length != 1)
@@ -260,6 +294,12 @@ namespace WindowsFormsApp2
             }
         }
 
+        /*!
+* ULUBIONE.
+*
+* Wyswietla okno ulubione.
+*/
+        
         private void dodajToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (getCurrentBrowser().Url != null)
